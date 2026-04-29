@@ -1,16 +1,3 @@
-// Copyright (c) 2025 Zimin
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
 
 #pragma once
 #ifndef __RINGBUFFER_H__
@@ -77,17 +64,17 @@ static inline void deinit_ringbuffer(RingBuffer_T *ringbuffer)
         ringbuffer->w_able_part.base = 0;
 }
 
-static inline bool is_buffer_full(RingBuffer_T *ringbuffer)
+static inline bool is_ringbuffer_full(RingBuffer_T *ringbuffer)
 {
         return (ringbuffer->w_able_part.head == ringbuffer->r_able_part.tail);
 }
 
-static inline uint64_t get_buffer_free_size(RingBuffer_T *ringbuffer)
+static inline uint64_t get_ringbuffer_free_size(RingBuffer_T *ringbuffer)
 {
         return (ringbuffer->w_able_part.size);
 }
 
-static inline uint64_t get_buffer_used_size(RingBuffer_T *ringbuffer)
+static inline uint64_t get_ringbuffer_used_size(RingBuffer_T *ringbuffer)
 {
         return (ringbuffer->r_able_part.size);
 }
@@ -121,7 +108,7 @@ static inline void overbig_force_reset(RingBuffer_T *ringbuffer)
         ringbuffer->w_able_part.base = 0;
 }
 
-static inline bool put(uint8_t *data, uint16_t data_len, RingBuffer_T *ringbuffer)
+static inline bool ringbuffer_put(uint8_t *data, uint16_t data_len, RingBuffer_T *ringbuffer)
 {
         if(data_len > ringbuffer->ringbuffer_size){
                 return false;
@@ -160,7 +147,7 @@ static inline bool put(uint8_t *data, uint16_t data_len, RingBuffer_T *ringbuffe
         return true;
 }
 
-static inline bool get(uint8_t *data, uint16_t data_len, RingBuffer_T *ringbuffer)
+static inline bool ringbuffer_get(uint8_t *data, uint16_t data_len, RingBuffer_T *ringbuffer)
 {
         if(data_len > ringbuffer->ringbuffer_size){
                 return false;
