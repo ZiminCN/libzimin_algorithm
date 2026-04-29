@@ -42,7 +42,7 @@ typedef struct {
         uint8_t *ringbuffer_ptr;
 }RingBuffer_T;
 
-RingBuffer_T init_ringbuffer(uint16_t ringbuffer_size)
+static inline RingBuffer_T init_ringbuffer(uint16_t ringbuffer_size)
 {
         RingBuffer_T ringbuffer;
         ringbuffer.ringbuffer_size = ringbuffer_size;
@@ -62,7 +62,7 @@ RingBuffer_T init_ringbuffer(uint16_t ringbuffer_size)
         return ringbuffer;
 }
 
-void deinit_ringbuffer(RingBuffer_T *ringbuffer)
+static inline void deinit_ringbuffer(RingBuffer_T *ringbuffer)
 {
         free(ringbuffer->ringbuffer_ptr);
         ringbuffer->ringbuffer_ptr = NULL;
@@ -77,23 +77,23 @@ void deinit_ringbuffer(RingBuffer_T *ringbuffer)
         ringbuffer->w_able_part.base = 0;
 }
 
-bool is_buffer_full(RingBuffer_T *ringbuffer)
+static inline bool is_buffer_full(RingBuffer_T *ringbuffer)
 {
         return (ringbuffer->w_able_part.head == ringbuffer->r_able_part.tail);
 }
 
-uint64_t get_buffer_free_size(RingBuffer_T *ringbuffer)
+static inline uint64_t get_buffer_free_size(RingBuffer_T *ringbuffer)
 {
         return (ringbuffer->w_able_part.size);
 }
 
-uint64_t get_buffer_used_size(RingBuffer_T *ringbuffer)
+static inline uint64_t get_buffer_used_size(RingBuffer_T *ringbuffer)
 {
         return (ringbuffer->r_able_part.size);
 }
 
 // Even at a writing speed of 5 billion bytes per second, it would take 1,200 years to reach the upper limit of the uint64_t range, and this would hardly trigger anything.
-bool ringbuffer_health_check(RingBuffer_T *ringbuffer)
+static inline bool ringbuffer_health_check(RingBuffer_T *ringbuffer)
 {
         // head is always bigger or equal than tail
         if(ringbuffer->r_able_part.head < ringbuffer->r_able_part.tail){
@@ -107,7 +107,7 @@ bool ringbuffer_health_check(RingBuffer_T *ringbuffer)
         return true;
 }
 
-void overbig_force_reset(RingBuffer_T *ringbuffer)
+static inline void overbig_force_reset(RingBuffer_T *ringbuffer)
 {
         memset(ringbuffer->ringbuffer_ptr, 0x00, ringbuffer->ringbuffer_size);
         ringbuffer->ringbuffer_size = 0;
@@ -121,7 +121,7 @@ void overbig_force_reset(RingBuffer_T *ringbuffer)
         ringbuffer->w_able_part.base = 0;
 }
 
-bool put(uint8_t *data, uint16_t data_len, RingBuffer_T *ringbuffer)
+static inline bool put(uint8_t *data, uint16_t data_len, RingBuffer_T *ringbuffer)
 {
         if(data_len > ringbuffer->ringbuffer_size){
                 return false;
@@ -160,7 +160,7 @@ bool put(uint8_t *data, uint16_t data_len, RingBuffer_T *ringbuffer)
         return true;
 }
 
-bool get(uint8_t *data, uint16_t data_len, RingBuffer_T *ringbuffer)
+static inline bool get(uint8_t *data, uint16_t data_len, RingBuffer_T *ringbuffer)
 {
         if(data_len > ringbuffer->ringbuffer_size){
                 return false;
