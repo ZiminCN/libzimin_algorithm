@@ -1,3 +1,16 @@
+// Copyright (c) 2025 Zimin
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 #pragma once
 #ifndef __RINGBUFFER_H__
@@ -41,7 +54,7 @@ static inline RingBuffer_T init_ringbuffer(uint16_t ringbuffer_size)
         ringbuffer.w_able_part.head = ringbuffer.ringbuffer_size;
         ringbuffer.w_able_part.tail = 0;
         ringbuffer.w_able_part.base = 0;
-        ringbuffer.w_able_part.size = ringbuffer_size;
+        ringbuffer.w_able_part.size = ringbuffer.ringbuffer_size;
 
         ringbuffer.ringbuffer_ptr = (uint8_t *)malloc(ringbuffer_size);
         memset(ringbuffer.ringbuffer_ptr, 0x00, ringbuffer_size);
@@ -94,18 +107,17 @@ static inline bool ringbuffer_health_check(RingBuffer_T *ringbuffer)
         return true;
 }
 
-static inline void overbig_force_reset(RingBuffer_T *ringbuffer)
+static inline void reset_ringbuffer(RingBuffer_T *ringbuffer)
 {
         memset(ringbuffer->ringbuffer_ptr, 0x00, ringbuffer->ringbuffer_size);
-        ringbuffer->ringbuffer_size = 0;
         ringbuffer->r_able_part.head = 0;
         ringbuffer->r_able_part.tail = 0;
-        ringbuffer->r_able_part.size = 0;
         ringbuffer->r_able_part.base = 0;
-        ringbuffer->w_able_part.head = 0;
+        ringbuffer->r_able_part.size = 0;
+        ringbuffer->w_able_part.head = ringbuffer->ringbuffer_size;
         ringbuffer->w_able_part.tail = 0;
-        ringbuffer->w_able_part.size = 0;
         ringbuffer->w_able_part.base = 0;
+        ringbuffer->w_able_part.size = ringbuffer->ringbuffer_size;
 }
 
 static inline bool ringbuffer_put(uint8_t *data, uint16_t data_len, RingBuffer_T *ringbuffer)
@@ -179,7 +191,7 @@ static inline bool ringbuffer_get(uint8_t *data, uint16_t data_len, RingBuffer_T
         ringbuffer->w_able_part.size += data_len;
 
         if(unlikely(!ringbuffer_health_check(ringbuffer))){
-                overbig_force_reset(ringbuffer);
+                reset_ringbuffer(ringbuffer);
                 return false;
         }
 
