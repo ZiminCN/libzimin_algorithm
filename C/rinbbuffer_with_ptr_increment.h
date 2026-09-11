@@ -200,6 +200,30 @@ static inline bool ringbuffer_get(uint8_t *data, uint16_t data_len, RingBuffer_T
         return true;
 }
 
+static inline bool ringbuffer_check(uint8_t *data, uint16_t data_len, RingBuffer_T *ringbuffer)
+{
+        if(data_len > ringbuffer->ringbuffer_size){
+                return false;
+        }
+
+        if(data_len > ringbuffer->r_able_part.size){
+                return false;
+        }
+
+        // read
+        uint64_t get_offset_index = ringbuffer->r_able_part.tail - ringbuffer->r_able_part.base;
+        uint64_t continuous_r_able_size = ringbuffer->ringbuffer_size - get_offset_index;
+
+        if(data_len < continuous_r_able_size){
+                memcpy(data, &ringbuffer->ringbuffer_ptr[get_offset_index], data_len);
+        }else{
+                memcpy(data, &ringbuffer->ringbuffer_ptr[get_offset_index], continuous_r_able_size);
+                memcpy(data + continuous_r_able_size, &ringbuffer->ringbuffer_ptr[0], data_len - continuous_r_able_size);
+        }
+
+        return true;   
+}
+
 #ifdef __cplusplus
 }
 #endif

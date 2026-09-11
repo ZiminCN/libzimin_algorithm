@@ -139,6 +139,19 @@ public:
     return true;
   }
 
+  bool check_without_readout(std::vector<DataFormat> &data) {
+    if (data.size() > this->ringbuffer.buffer_size) {
+      return false;
+    }
+
+    if (data.size() > this->ringbuffer.read_partition.size) {
+      return false;
+    }
+
+    this->data_read(data);
+    return true;
+  }
+
   void test_query_ringbuffer() {
     std::cout << "Ring buffer real size: " << this->_ring_buffer.size()
               << std::endl;
@@ -220,12 +233,12 @@ private:
 
     // data read wrap around
     if (data.size() < vector_continuous_readable_size) {
-      std::cout << "data_read step 1" << std::endl;
+      // std::cout << "data_read step 1" << std::endl;
       std::copy(this->_ring_buffer.begin() + read_offset_index,
                 this->_ring_buffer.begin() + read_offset_index + data.size(),
                 data.begin());
     } else {
-      std::cout << "data_read step 2" << std::endl;
+      // std::cout << "data_read step 2" << std::endl;
       std::copy(this->_ring_buffer.begin() + read_offset_index,
                 this->_ring_buffer.begin() + read_offset_index +
                     vector_continuous_readable_size,
