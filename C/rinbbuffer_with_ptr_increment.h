@@ -120,6 +120,8 @@ static inline void reset_ringbuffer(RingBuffer_T *ringbuffer)
         ringbuffer->w_able_part.size = ringbuffer->ringbuffer_size;
 }
 
+static void overbig_force_reset(RingBuffer_T *ringbuffer) { reset_ringbuffer(ringbuffer); }
+
 static inline bool ringbuffer_put(uint8_t *data, uint16_t data_len, RingBuffer_T *ringbuffer)
 {
         if(data_len > ringbuffer->ringbuffer_size){
